@@ -44,17 +44,36 @@ exports.updateUserById = async (req, res) => {
     const { id } = req.params;
     const { firstName, lastName, email } = req.body;
 
+    // Create an object with only non-null and non-empty values
+    const updatedFields = {};
+    if (firstName !== null && firstName !== undefined && firstName.trim() !== "") {
+        updatedFields.firstName = firstName;
+    }
+    if (lastName !== null && lastName !== undefined && lastName.trim() !== "") {
+        updatedFields.lastName = lastName;
+    }
+    if (email !== null && email !== undefined && email.trim() !== "") {
+        updatedFields.email = email;
+    }
+
     try {
-        const updatedUser = await User.findByIdAndUpdate(id, { firstName, lastName, email }, { new: true });
+        // Check if there are any fields to update
+        if (Object.keys(updatedFields).length === 0) {
+            return res.status(400).json({ errorMessage: 'No valid fields to update' });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(id, updatedFields, { new: true });
         if (!updatedUser) {
             return res.status(404).json({ errorMessage: 'User not found' });
         }
+
         res.status(200).json({ message: 'User updated successfully', updatedUser });
     } catch (error) {
         console.error('Error updating user by ID:', error.message);
         res.status(400).json({ errorMessage: 'Failed to update user', error: error.message });
     }
 };
+
 
 
 exports.deleteUserById = async (req, res) => {
