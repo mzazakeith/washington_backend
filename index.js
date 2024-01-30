@@ -4,7 +4,7 @@ const port = 3000
 require('./db/db');
 const appRouter = require("./routes/routes.app");
 const userRouter = require("./routes/routes.user");
-const { logRequest } = require('./middleware/middleware.commonController'); // Adjust the path based on your project structure
+const { logRequest } = require('./middleware/middleware.commonController');
 
 // middlewares
 app.use(express.json());
